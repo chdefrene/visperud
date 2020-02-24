@@ -105,3 +105,5 @@ dist
 
 # Extras
 .DS_Store
+.idea
+.idea/*
