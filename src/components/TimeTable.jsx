@@ -28,21 +28,21 @@ export default function NextArrival() {
     const { loading, error, data, refetch } = useQuery(GET_NEXT_ARRIVAL, {
         pollInterval: 10000
     });
-    const [currentTime, setCurrentTime] = useState(new Date());
+    const [currentTime, setCurrentTime] = useState(moment());
     const [timeDiff, setTimeDiff] = useState(0);
 
-    let arrivalTime = new Date();
+    let arrivalTime = moment();
 
     useEffect(() => {
-        setInterval(() => setCurrentTime(new Date()),
+        setInterval(() => setCurrentTime(moment()),
             1000
         );
     }, []);
 
     useEffect(() => {
         if (currentTime < arrivalTime) {
-            const diffDate = new Date(arrivalTime - currentTime);
-            setTimeDiff((diffDate.getMinutes() < 2) ? "LØP !!!" : moment(diffDate).format(timeDeltaFormat));
+            const delta = moment(arrivalTime - currentTime);
+            setTimeDiff((delta.minutes() < 2) ? "LØP !!!" : delta.format(timeDeltaFormat));
         }
     }, [arrivalTime, currentTime]);
 
@@ -54,7 +54,7 @@ export default function NextArrival() {
     const nextDeparture = data.stopPlace.estimatedCalls[0];
     const lineCode = nextDeparture.serviceJourney.line.publicCode;
     const lineName = nextDeparture.serviceJourney.line.name;
-    arrivalTime = new Date(Date.parse(nextDeparture.expectedArrivalTime));
+    arrivalTime = moment(nextDeparture.expectedArrivalTime);
 
     return (
         <div>
